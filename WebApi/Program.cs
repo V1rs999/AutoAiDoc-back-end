@@ -9,6 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using WebApi.Data;
 using WebApi.Interface;
+using WebApi.Middleware;
 using WebApi.Models;
 using WebApi.Repository;
 using WebApi.Services;
@@ -18,6 +19,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddScoped<IDropFileRepository, DropFileRepository>();
 builder.Services.AddScoped<IListOFErrorRepository, ListOFErrorRepository>();
+builder.Services.AddScoped<IFileReader, FileReader>();
+builder.Services.AddScoped<IToken, Token>();
 builder.Services.AddDbContext<AppDbContext>(e =>
     e.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
@@ -52,6 +55,7 @@ builder.Services.AddAuthentication(options =>
     options.ClientId = "500684865018-bniojefur61oagvkmusm18320updkb0u.apps.googleusercontent.com";
     options.ClientSecret = "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";
 });
+
 builder.Services.Configure<IdentityOptions>(opt =>
 	{
 		opt.Password.RequireDigit = false;
@@ -76,12 +80,15 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseStaticFiles();
+app.UseDirectoryBrowser();
+
 app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 app.UseHttpsRedirection();
 
-app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseRouting();
 
 app.MapControllers();
 

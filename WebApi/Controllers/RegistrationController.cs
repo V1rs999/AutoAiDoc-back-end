@@ -45,8 +45,8 @@ namespace WebApi.Controllers
                 UserName = registerVM.UserName,
                 SecurityStamp = Guid.NewGuid().ToString(),
                 Email = registerVM.Email,
-
             };
+
             var newUserResponse = await _userManager.CreateAsync(newUser, registerVM.Password);
 
             if (!newUserResponse.Succeeded)
@@ -58,7 +58,7 @@ namespace WebApi.Controllers
             var result = await _signInManager.PasswordSignInAsync(newUser, registerVM.Password, false, false);
             if (result.Succeeded)
             {
-                return Ok(new { returnUrl = "http://localhost:5173/authorization" });
+                return Ok( new { msg = "Success"});
             }
 
             return StatusCode(500, ModelState);
