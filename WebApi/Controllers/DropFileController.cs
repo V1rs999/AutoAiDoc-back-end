@@ -85,7 +85,7 @@ namespace WebApi.Controllers
                 return BadRequest(new { msg = "Немає помилок або файли пусті" });
             }
 
-            return Ok(errorsDto);
+            return Ok();
         }
     }
 }

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.VisualBasic;
+using Newtonsoft.Json;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Security.Claims;
@@ -132,7 +133,9 @@ namespace WebApi.Controllers
             var userName = WebUtility.UrlEncode(_userName);
             var user = new {userId, email, userName };
             var token = new { token = new JwtSecurityTokenHandler().WriteToken(myToken), tokenId = myToken.Id };
-            string finalUrl = $"{returnUrl}?token={token}&user={user}";
+            string jsUser = JsonConvert.SerializeObject(user);
+            string jsToken = JsonConvert.SerializeObject(token);
+            string finalUrl = $"{returnUrl}?token={jsToken}&user={jsUser}";
             return finalUrl;
         }
     }
