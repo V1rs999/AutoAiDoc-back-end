@@ -56,9 +56,7 @@ namespace WebApi.Controllers
                 var result = await _signInManager.PasswordSignInAsync(curUser, model.Password, false, false);
                 if (result.Succeeded)
                 {
-                    string returnUrl = "https://localhost:5173";
-
-                    return Ok(ReturnUrl(returnUrl, curUser.Id, curUser.Email, curUser.UserName, myToken));
+                    return Ok(ReturnUrl(string.Empty, curUser.Id, curUser.Email, curUser.UserName, myToken));
                 }
             }
             return Unauthorized();

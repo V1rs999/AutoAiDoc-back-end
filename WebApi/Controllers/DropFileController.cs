@@ -34,10 +34,8 @@ namespace WebApi.Controllers
         [HttpPost()]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> Index(IFormFile formFiles, string token, string? Vin)
+        public async Task<IActionResult> Index(IFormFile formFiles, string? Vin)
         {
-            if (_token.isExpired(token)) { return BadRequest(new { smg = "Token is expired" }); }
-
             if (!ModelState.IsValid) { return BadRequest(ModelState); }
 
             if (formFiles == null) { return BadRequest(new { msg = "Прикріпіть файл" }); }

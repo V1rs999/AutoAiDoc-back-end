@@ -27,8 +27,6 @@ namespace WebApi.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(string token)
         {
-            if (_token.isExpired(token)) { return BadRequest(new { msg = "Token is expired" }); }
-
             if (User.Identity.IsAuthenticated)
             {
                 var curUserId = _httpContextAccessor.HttpContext.User.GetUserId();
