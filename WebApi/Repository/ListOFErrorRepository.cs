@@ -21,6 +21,7 @@ namespace WebApi.Repository
             {
                 errorsDto.Add(new ErrorsDto
                 {
+                    Vin = error.Vin,
                     Code = error.Code,
                     Description = error.Description,
                 });
