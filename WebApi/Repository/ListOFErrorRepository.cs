@@ -13,15 +13,14 @@ namespace WebApi.Repository
         {
             _context = context;
         }
-        public async Task<IEnumerable<ErrorsDto>> GetErrorsByUserIdAsync(string id)
+        public async Task<IEnumerable<ListOfErrorsOutputDto>> GetErrorsByVinAsync(string vin)
         {
-            var errors = await _context.Errors.Where(e => e.AppUserId == id).ToListAsync();
-            List<ErrorsDto> errorsDto = new List<ErrorsDto>();
+            var errors = await _context.Errors.Where(e => e.Vin == vin).ToListAsync();
+            List<ListOfErrorsOutputDto> errorsDto = new List<ListOfErrorsOutputDto>();
             foreach (var error in errors)
             {
-                errorsDto.Add(new ErrorsDto
+                errorsDto.Add(new ListOfErrorsOutputDto
                 {
-                    Vin = error.Vin,
                     Code = error.Code,
                     Description = error.Description,
                 });

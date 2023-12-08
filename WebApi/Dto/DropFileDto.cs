@@ -2,7 +2,8 @@
 {
     public class DropFileDto
     {
-        [AllowedExtensions(new string[] { ".txt" })]
         public IFormFile File { get; set; }
+        public string userId { get; set; }
+        public string Vin { get; set; }
     }
 }

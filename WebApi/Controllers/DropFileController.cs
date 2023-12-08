@@ -34,25 +34,25 @@ namespace WebApi.Controllers
         [HttpPost()]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> Index(IFormFile formFiles, string? Vin)
+        public async Task<IActionResult> Index([FromForm] string userId, IFormFile formFile, string? Vin)
         {
             if (!ModelState.IsValid) { return BadRequest(ModelState); }
 
-            if (formFiles == null) { return BadRequest(new { msg = "Прикріпіть файл" }); }
+            if (formFile == null) { return BadRequest(new { msg = "Прикріпіть файл" }); }
 
-            var ext = Path.GetExtension(formFiles.FileName);
+            var ext = Path.GetExtension(formFile.FileName);
             if (ext != ".txt")
             {
                 return BadRequest(new { msg = "Неправильний тип файла" });
             }
 
-            Vin = _fileReader.FindVinCode(formFiles);
+            Vin = _fileReader.FindVinCode(formFile);
             if(string.IsNullOrEmpty(Vin)) { return BadRequest(new { msg = "У файлі немає Vin коду" }); }
 
             List<ErrorsDto> errorsDto = new List<ErrorsDto>();
 
 
-            var errors = _fileReader.FindErrors(formFiles);
+            var errors = _fileReader.FindErrors(formFile);
 
             foreach (var item in errors)
             {
@@ -65,8 +65,7 @@ namespace WebApi.Controllers
                     });
             }
 
-            var curUserId = _httpContextAccessor.HttpContext.User.GetUserId();
-            var user = await _dropFileRepository.GetUserById(curUserId);
+            var user = await _dropFileRepository.GetUserById(userId);
 
             foreach (var item in errors)
             {
@@ -85,7 +84,7 @@ namespace WebApi.Controllers
                 return BadRequest(new { msg = "Немає помилок або файли пусті" });
             }
 
-            return Ok();
+            return Ok("listoferror");
         }
     }
 }

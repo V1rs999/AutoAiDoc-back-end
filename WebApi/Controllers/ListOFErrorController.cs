@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using WebApi.Dto;
 using WebApi.Interface;
 using WebApi.Middleware;
 
@@ -11,33 +12,21 @@ namespace WebApi.Controllers
     [ApiController]
     public class ListOFErrorController : ControllerBase
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IListOFErrorRepository _listOFErrorRepository;
-        private readonly IToken _token;
 
-        public ListOFErrorController(IHttpContextAccessor httpContextAccessor, 
-            IListOFErrorRepository listOFErrorRepository,
-            IToken token)
+        public ListOFErrorController(IListOFErrorRepository listOFErrorRepository)
         {
-            _httpContextAccessor = httpContextAccessor;
             _listOFErrorRepository = listOFErrorRepository;
-            _token = token;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Index(string token)
+        [HttpPost]
+        public async Task<IActionResult> Index([FromBody] ListOfErrorsDto listOfErrorsDto)
         {
-            if (User.Identity.IsAuthenticated)
-            {
-                var curUserId = _httpContextAccessor.HttpContext.User.GetUserId();
-
-                var models = await _listOFErrorRepository.GetErrorsByUserIdAsync(curUserId);
+                var models = await _listOFErrorRepository.GetErrorsByVinAsync(listOfErrorsDto.Vin);
 
                 if (models.Count() <= 0) { return Ok(new { msg =  "Немає помилок" }); }
 
-                return Ok(models.GroupBy(m => m.Vin));
-            }
-            return Ok(new { msg = "Немає помилок" });
+                return Ok(new {listOfErrorsDto.Vin, errors = models });
         }
     }
 }
