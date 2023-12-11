@@ -2,6 +2,8 @@
 using WebApi.Interface;
 using WebApi.Services;
 using WebApi.Dto;
+using WebApi.Models;
+using System.Net;
 
 namespace WebApi.Controllers
 {
@@ -34,24 +36,22 @@ namespace WebApi.Controllers
         [HttpPost()]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> Index([FromForm] string userId, IFormFile formFile, string? Vin)
+        public async Task<IActionResult> Index([FromForm] string userId, IFormFile formFile,[FromForm] string? Vin)
         {
             if (!ModelState.IsValid) { return BadRequest(ModelState); }
 
-            if (formFile == null) { return BadRequest(new { msg = "Прикріпіть файл" }); }
+            if (formFile == null) { return BadRequest("Прикріпіть файл"); }
 
             var ext = Path.GetExtension(formFile.FileName);
-            if (ext != ".txt")
-            {
-                return BadRequest(new { msg = "Неправильний тип файла" });
-            }
 
-            Vin = _fileReader.FindVinCode(formFile);
-            if(string.IsNullOrEmpty(Vin)) { return BadRequest(new { msg = "У файлі немає Vin коду" }); }
+            if (ext != ".txt") { return BadRequest("Неправильний тип файла"); }
+
+            var fileVin = _fileReader.FindVinCode(formFile);
+            Vin = string.IsNullOrEmpty(fileVin) ? Vin : fileVin;
+
+            if(string.IsNullOrEmpty(Vin) || Vin == "null") { return StatusCode(205); }
 
             List<ErrorsDto> errorsDto = new List<ErrorsDto>();
-
-
             var errors = _fileReader.FindErrors(formFile);
 
             foreach (var item in errors)
@@ -62,27 +62,29 @@ namespace WebApi.Controllers
                         Vin = Vin,
                         Code = item.Code,
                         Description = item.Description,
+                        DateTime = DateTime.Now,
                     });
             }
 
             var user = await _dropFileRepository.GetUserById(userId);
 
-            foreach (var item in errors)
+            if (user == null) { return BadRequest("Користувача не існує"); }
+
+            var vinCodes = new VinCodes
             {
-                item.Vin = Vin;
-                item.AppUser = user;
-                item.AppUserId = user.Id;
-                if (!_dropFileRepository.Add(item))
-                {
-                    ModelState.AddModelError("", "Щось пішло не так при збережені");
-                    return StatusCode(500, ModelState);
-                }
+                Vin = Vin,
+                AppUser = user,
+                AppUserId = user.Id,
+                Errors = errors.ToList(),
+            };
+
+            if (!_dropFileRepository.Add(vinCodes))
+            {
+                ModelState.AddModelError("", "Щось пішло не так при збережені");
+                return StatusCode(500, ModelState);
             }
 
-            if (!errorsDto.Any())
-            {
-                return BadRequest(new { msg = "Немає помилок або файли пусті" });
-            }
+            if (!errorsDto.Any()) { return BadRequest("Немає помилок або файли пусті"); }
 
             return Ok("listoferror");
         }

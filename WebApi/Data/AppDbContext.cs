@@ -10,6 +10,7 @@ namespace WebApi.Data
         {
 
         }
+        public DbSet<VinCodes> VinCodes { get; set; }
         public DbSet<Errors> Errors { get; set; }
         //protected override void OnModelCreating(ModelBuilder builder)
         //{

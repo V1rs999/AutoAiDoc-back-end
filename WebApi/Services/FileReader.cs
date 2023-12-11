@@ -53,9 +53,11 @@ namespace WebApi.Services
                             .Select(m => m.Value)
                             .FirstOrDefault();
 
-                        errors.Add(new Errors {
+                        errors.Add(new Errors
+                        {
                             Code = matchesCode[i].Value,
                             Description = description.Substring(0, description.Length - 1),
+                            DateTime = DateTime.Now,
                         });
                     }
                 }

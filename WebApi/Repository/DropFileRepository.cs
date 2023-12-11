@@ -13,7 +13,7 @@ namespace WebApi.Repository
         {
             _context = context;
         }
-        public bool Add(Errors errors)
+        public bool Add(VinCodes errors)
         {
             _context.Add(errors);
             return Save();

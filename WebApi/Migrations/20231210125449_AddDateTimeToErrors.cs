@@ -1,28 +1,29 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace WebApi.Migrations
 {
     /// <inheritdoc />
-    public partial class AddFieldVinToErrors : Migration
+    public partial class AddDateTimeToErrors : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
-                name: "Vin",
+            migrationBuilder.AddColumn<DateTime>(
+                name: "DateTime",
                 table: "Errors",
-                type: "nvarchar(max)",
+                type: "datetime2",
                 nullable: false,
-                defaultValue: "");
+                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "Vin",
+                name: "DateTime",
                 table: "Errors");
         }
     }

@@ -157,6 +157,26 @@ namespace WebApi.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "VinCodes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Vin = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AppUserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_VinCodes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_VinCodes_AspNetUsers_AppUserId",
+                        column: x => x.AppUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Errors",
                 columns: table => new
                 {
@@ -164,15 +184,15 @@ namespace WebApi.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AppUserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    VinCodesId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Errors", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Errors_AspNetUsers_AppUserId",
-                        column: x => x.AppUserId,
-                        principalTable: "AspNetUsers",
+                        name: "FK_Errors_VinCodes_VinCodesId",
+                        column: x => x.VinCodesId,
+                        principalTable: "VinCodes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -217,8 +237,13 @@ namespace WebApi.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Errors_AppUserId",
+                name: "IX_Errors_VinCodesId",
                 table: "Errors",
+                column: "VinCodesId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_VinCodes_AppUserId",
+                table: "VinCodes",
                 column: "AppUserId");
         }
 
@@ -245,6 +270,9 @@ namespace WebApi.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "VinCodes");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

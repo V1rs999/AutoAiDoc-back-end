@@ -4,6 +4,7 @@ namespace WebApi.Models
 {
     public class AppUser: IdentityUser
     {
-        public ICollection<Errors> Errors { get; set; }
+        public string ImageUrl { get; set; }
+        public ICollection<VinCodes> VinCodes { get; set; }
     }
 }

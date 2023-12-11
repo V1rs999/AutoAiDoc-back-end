@@ -15,7 +15,7 @@ namespace WebApi.Repository
         }
         public async Task<IEnumerable<ListOfErrorsOutputDto>> GetErrorsByVinAsync(string vin)
         {
-            var errors = await _context.Errors.Where(e => e.Vin == vin).ToListAsync();
+            var errors = await _context.Errors.Where(e => e.VinCodes.Vin == vin).ToListAsync();
             List<ListOfErrorsOutputDto> errorsDto = new List<ListOfErrorsOutputDto>();
             foreach (var error in errors)
             {
@@ -23,6 +23,7 @@ namespace WebApi.Repository
                 {
                     Code = error.Code,
                     Description = error.Description,
+                    DateTime = error.DateTime.ToString("dd\\MM\\yy HH:mm"),
                 });
             }
             return errorsDto;

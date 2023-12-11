@@ -21,6 +21,7 @@ builder.Services.AddScoped<IDropFileRepository, DropFileRepository>();
 builder.Services.AddScoped<IListOFErrorRepository, ListOFErrorRepository>();
 builder.Services.AddScoped<IFileReader, FileReader>();
 builder.Services.AddScoped<IToken, Token>();
+builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddDbContext<AppDbContext>(e =>
     e.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddIdentity<AppUser, IdentityRole>(options =>

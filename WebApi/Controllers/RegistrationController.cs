@@ -58,7 +58,7 @@ namespace WebApi.Controllers
             var result = await _signInManager.PasswordSignInAsync(newUser, registerVM.Password, false, false);
             if (result.Succeeded)
             {
-                return Ok( new { msg = "Success"});
+                return Ok("Success");
             }
 
             return StatusCode(500, ModelState);

@@ -19,14 +19,15 @@ namespace WebApi.Controllers
             _listOFErrorRepository = listOFErrorRepository;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Index([FromBody] ListOfErrorsDto listOfErrorsDto)
+        [HttpGet]
+        public async Task<IActionResult> Index(string Vin)
         {
-                var models = await _listOFErrorRepository.GetErrorsByVinAsync(listOfErrorsDto.Vin);
+            var models = await _listOFErrorRepository.GetErrorsByVinAsync(Vin);
 
-                if (models.Count() <= 0) { return Ok(new { msg =  "Немає помилок" }); }
+            if (models.Count() <= 0) { return Ok("Немає помилок"); }
 
-                return Ok(new {listOfErrorsDto.Vin, errors = models });
+            return Ok(new { Vin, errors = models.OrderByDescending(date => date.DateTime).ToList() });
         }
     }
 }
+

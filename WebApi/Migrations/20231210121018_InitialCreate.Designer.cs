@@ -12,8 +12,8 @@ using WebApi.Data;
 namespace WebApi.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231118161137_AddImageUrl")]
-    partial class AddImageUrl
+    [Migration("20231210121018_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -231,10 +231,6 @@ namespace WebApi.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("AppUserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("Code")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -243,11 +239,37 @@ namespace WebApi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("VinCodesId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VinCodesId");
+
+                    b.ToTable("Errors");
+                });
+
+            modelBuilder.Entity("WebApi.Models.VinCodes", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AppUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Vin")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AppUserId");
 
-                    b.ToTable("Errors");
+                    b.ToTable("VinCodes");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -303,8 +325,19 @@ namespace WebApi.Migrations
 
             modelBuilder.Entity("WebApi.Models.Errors", b =>
                 {
-                    b.HasOne("WebApi.Models.AppUser", "AppUser")
+                    b.HasOne("WebApi.Models.VinCodes", "VinCodes")
                         .WithMany("Errors")
+                        .HasForeignKey("VinCodesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("VinCodes");
+                });
+
+            modelBuilder.Entity("WebApi.Models.VinCodes", b =>
+                {
+                    b.HasOne("WebApi.Models.AppUser", "AppUser")
+                        .WithMany("VinCodes")
                         .HasForeignKey("AppUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -313,6 +346,11 @@ namespace WebApi.Migrations
                 });
 
             modelBuilder.Entity("WebApi.Models.AppUser", b =>
+                {
+                    b.Navigation("VinCodes");
+                });
+
+            modelBuilder.Entity("WebApi.Models.VinCodes", b =>
                 {
                     b.Navigation("Errors");
                 });

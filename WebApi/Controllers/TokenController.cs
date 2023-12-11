@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using WebApi.Dto;
 using WebApi.Interface;
+using WebApi.Middleware;
 
 namespace WebApi.Controllers
 {
@@ -15,10 +17,10 @@ namespace WebApi.Controllers
             _token = token;
         }
 
-        [HttpPost("isExpired")]
+        [HttpGet("isExpired")]
         public IActionResult Index(string token)
         {
-            if (_token.isExpired(token)) { return BadRequest(new { msg = "Token is Expired" }); }
+            if (_token.isExpired(token)) { return BadRequest("Token is Expired"); }
             return Ok();
         }
     }
