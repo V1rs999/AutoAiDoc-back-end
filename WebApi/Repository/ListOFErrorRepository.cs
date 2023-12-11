@@ -23,7 +23,7 @@ namespace WebApi.Repository
                 {
                     Code = error.Code,
                     Description = error.Description,
-                    DateTime = error.DateTime.ToString("dd\\MM\\yy HH:mm"),
+                    DateTime = error.DateTime.ToString("dd/MM/yy HH:mm"),
                 });
             }
             return errorsDto;
