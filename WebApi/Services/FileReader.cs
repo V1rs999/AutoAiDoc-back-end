@@ -1,7 +1,4 @@
-﻿
-using System.Reflection.Metadata.Ecma335;
-using System.Text;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using WebApi.Interface;
 using WebApi.Models;
 
@@ -9,62 +6,52 @@ namespace WebApi.Services
 {
     public class FileReader : IFileReader
     {
-        readonly string carScannerRegex = @"^[PBCU]\d{4}(?=\s)";
-        readonly string carScannerDescriptionRegex = @"(?<=Статус:\s)(.{4,})(?=\s*=\s*|\s*$)";
-        readonly string vinCodeRegex = @"[A-HJ-NPR-Za-hj-npr-z\d]{8}[\dX][A-HJ-NPR-Za-hj-npr-z\d]{2}\d{6}";
-
-        public string FindVinCode(IFormFile file)
+        const string VIN_CODE_REGEX = @"[A-HJ-NPR-Za-hj-npr-z\d]{8}[\dX][A-HJ-NPR-Za-hj-npr-z\d]{2}\d{6}";
+        const string CAR_SCANNER_REGEX = @"^[PBCU]?\d{4,8}\s";
+        const string CAR_SCANNER_DESCRIPTION_REGEX = @"(?<=Статус:\s)(.{4,})(?=\s*=\s*|\s*$)";
+        public VinCodes ReadFile(IFormFile file)
         {
-            var result = new StringBuilder();
-            string line;
-            using (var reader = new StreamReader(file.OpenReadStream()))
+            var currentModule = new VinCodes() { };
+            Errors errorInfo = new Errors();
+
+            using (StreamReader sr = new StreamReader(file.OpenReadStream()))
             {
-
-                while (reader.Peek() >= 0)
-                    result.AppendLine(reader.ReadLine());
-
-                line = result.ToString();
-                Match matchesCode = Regex.Match(line, vinCodeRegex, RegexOptions.Multiline);
-                return matchesCode.Value;
-            }
-        }
-        public IEnumerable<Errors> FindErrors(IFormFile file)
-        {
-            List<Errors> errors = new List<Errors>();
-            var result = new StringBuilder();
-            string line;
-            using (var reader = new StreamReader(file.OpenReadStream()))
-            { 
-                
-                while (reader.Peek() >= 0)
-                    result.AppendLine(reader.ReadLine());
-
-                line = result.ToString();
-                MatchCollection matchesCode = Regex.Matches(line, carScannerRegex, RegexOptions.Multiline);
-                MatchCollection matchesDescription = Regex.Matches(line, carScannerDescriptionRegex, RegexOptions.Multiline);
-                
-                int matchesCount = matchesCode.Count;
-                if (matchesCode.Count > 0)
+                string line;
+                while ((line = sr.ReadLine()) != null)
                 {
-                    for (int i = 0; i < matchesCount; i++) {
+                    if (errorInfo.Code != null && errorInfo.Description != null)
+                    {
+                        errorInfo.DateTime = DateTime.Now;
+                        currentModule.Errors.Add(errorInfo);
+                        errorInfo = new Errors();
+                    }
 
-                        string description = matchesDescription
-                            .Where(d => d.Index >= matchesCode[i].Index)
-                            .Select(m => m.Value)
-                            .FirstOrDefault();
+                    Match matchesCode = Regex.Match(line, CAR_SCANNER_REGEX, RegexOptions.Singleline);
+                    if (matchesCode.Success)
+                    {
+                        errorInfo.Code = matchesCode.Value.Trim();
+                        continue;
+                    }
 
-                        errors.Add(new Errors
+                    Match matchesDescription = Regex.Match(line, CAR_SCANNER_DESCRIPTION_REGEX, RegexOptions.Singleline);
+                    if (matchesDescription.Success)
+                    {
+                        errorInfo.Description = matchesDescription.Value;
+                        continue;
+                    }
+
+                    Match matchesVin = Regex.Match(line, VIN_CODE_REGEX, RegexOptions.Singleline);
+                    if (matchesVin.Success)
+                    {
+                        currentModule = new VinCodes
                         {
-                            Code = matchesCode[i].Value,
-                            Description = description.Substring(0, description.Length - 1),
-                            DateTime = DateTime.Now,
-                        });
+                            Vin = matchesVin.Value
+                        };
+                        continue;
                     }
                 }
+                return currentModule;
             }
-            return errors;
         }
     }
 }
-
-

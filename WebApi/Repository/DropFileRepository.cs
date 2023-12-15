@@ -13,8 +13,20 @@ namespace WebApi.Repository
         {
             _context = context;
         }
-        public bool Add(VinCodes errors)
+        public bool AddVin(VinCodes errors)
         {
+            var vin = _context.VinCodes.FirstOrDefault(x => x.Vin == errors.Vin && x.AppUserId == errors.AppUserId);
+            
+            if (vin != null) 
+            {
+                var newErrors = errors.Errors;
+                foreach (var error in newErrors)
+                {
+                    error.VinCodes = _context.VinCodes.FirstOrDefault(v => v.Id == vin.Id);
+                }
+                _context.AddRange(newErrors);
+                return Save();
+            }
             _context.Add(errors);
             return Save();
         }

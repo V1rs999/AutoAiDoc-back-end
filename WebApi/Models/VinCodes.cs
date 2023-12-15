@@ -7,5 +7,9 @@
         public ICollection<Errors> Errors { get; set; }
         public string AppUserId { get; set; }
         public AppUser AppUser { get; set; }
+        public VinCodes()
+        {
+            Errors = new List<Errors>();
+        }
     }
 }
