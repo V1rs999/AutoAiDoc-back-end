@@ -1,16 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.VisualBasic;
 using Newtonsoft.Json;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Security.Claims;
-using System.Text;
 using WebApi.Dto;
 using WebApi.Interface;
-using WebApi.Middleware;
 using WebApi.Models;
 
 
@@ -91,6 +87,7 @@ namespace WebApi.Controllers
 
             var email = info.Principal.FindFirstValue(ClaimTypes.Email);
             var name = info.Principal.FindFirstValue(ClaimTypes.Name);
+            var fullName = name.Split(' ');
 
             var authClaims = _token.GetClaimsForJwt();
             var myToken = _token.GetToken(authClaims);
@@ -110,7 +107,13 @@ namespace WebApi.Controllers
                     return StatusCode(422, ModelState);
                 }
                 
-                var user = new AppUser { UserName = name, Email = email };
+                var user = new AppUser { 
+                    UserName = name, Email = email, 
+                    ImageUrl = "https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png",
+                    LastName = fullName[1],
+                    FirstName = fullName[0],            
+                };
+
                 var createRresult = await _userManager.CreateAsync(user);
                 if (createRresult.Succeeded)
                 {
@@ -119,7 +122,7 @@ namespace WebApi.Controllers
                     {
                         await _signInManager.SignInAsync(user, isPersistent: false);
                         await _signInManager.UpdateExternalAuthenticationTokensAsync(info);
-                        return Redirect(ReturnUrl(returnUrl, curUser.Id, curUser.Email, curUser.UserName, myToken));
+                        return Redirect(ReturnUrl(returnUrl, user.Id, user.Email, user.UserName, myToken));
                     }
                 }
 

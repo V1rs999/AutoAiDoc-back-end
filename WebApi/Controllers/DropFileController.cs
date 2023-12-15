@@ -86,7 +86,7 @@ namespace WebApi.Controllers
 
             if (!errorsDto.Any()) { return BadRequest("Немає помилок або файли пусті"); }
 
-            return Ok("listoferror");
+            return Ok(new { page = "listoferror", vin = Vin });
         }
     }
 }

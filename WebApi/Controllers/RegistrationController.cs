@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.V5.Pages.Account.Internal;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Dto;
 using WebApi.Models;
@@ -45,6 +46,7 @@ namespace WebApi.Controllers
                 UserName = registerVM.UserName,
                 SecurityStamp = Guid.NewGuid().ToString(),
                 Email = registerVM.Email,
+                ImageUrl = "http://16.170.236.235:5000/img/user.webp",
             };
 
             var newUserResponse = await _userManager.CreateAsync(newUser, registerVM.Password);

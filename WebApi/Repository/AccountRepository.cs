@@ -19,6 +19,12 @@ namespace WebApi.Repository
             return _context.Users.FirstOrDefaultAsync(u => u.Id == id);
         }
 
+        public async Task<bool> isLoginProvider(string id)
+        {
+            var loginProvider = await _context.UserLogins.FirstOrDefaultAsync(u => u.UserId == id);
+            return loginProvider != null ? true : false;
+        }
+
         public bool Save()
         {
             var saved = _context.SaveChanges();
