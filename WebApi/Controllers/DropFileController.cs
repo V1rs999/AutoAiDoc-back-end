@@ -64,6 +64,7 @@ namespace WebApi.Controllers
 
             vinCode.AppUser = user;
             vinCode.AppUserId = user.Id;
+            vinCode.Vin = Vin;
 
             if (!_dropFileRepository.AddVin(vinCode))
             {
