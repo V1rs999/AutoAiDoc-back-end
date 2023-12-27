@@ -53,7 +53,7 @@ namespace WebApi.Controllers
                 var result = await _signInManager.PasswordSignInAsync(curUser, model.Password, false, false);
                 if (result.Succeeded)
                 {
-                    return Ok(ReturnUrl(string.Empty, curUser.Id, curUser.Email, curUser.UserName, myToken));
+                    return Ok(ReturnUrl(string.Empty, curUser.Id, curUser.Email, curUser.UserName, myToken, curUser.ImageUrl));
                 }
             }
             return Unauthorized();
@@ -96,7 +96,7 @@ namespace WebApi.Controllers
             if (result.Succeeded)
             {
                 var curUser = await _userManager.FindByEmailAsync(email);
-                return Redirect(ReturnUrl(returnUrl, curUser.Id, curUser.Email, curUser.UserName, myToken));
+                return Redirect(ReturnUrl(returnUrl, curUser.Id, curUser.Email, curUser.UserName, myToken, curUser.ImageUrl));
             }
             else
             {
@@ -122,7 +122,7 @@ namespace WebApi.Controllers
                     {
                         await _signInManager.SignInAsync(user, isPersistent: false);
                         await _signInManager.UpdateExternalAuthenticationTokensAsync(info);
-                        return Redirect(ReturnUrl(returnUrl, user.Id, user.Email, user.UserName, myToken));
+                        return Redirect(ReturnUrl(returnUrl, user.Id, user.Email, user.UserName, myToken, user.ImageUrl));
                     }
                 }
 
@@ -131,10 +131,10 @@ namespace WebApi.Controllers
             }
         }
 
-        private string ReturnUrl(string returnUrl, string userId, string email, string _userName, JwtSecurityToken myToken)
+        private string ReturnUrl(string returnUrl, string userId, string email, string _userName, JwtSecurityToken myToken, string imageUrl)
         {
             var userName = WebUtility.UrlEncode(_userName);
-            var user = new {userId, email, userName };
+            var user = new {userId, email, userName, imageUrl };
             var token = new { token = new JwtSecurityTokenHandler().WriteToken(myToken), tokenId = myToken.Id };
             string jsUser = JsonConvert.SerializeObject(user);
             string jsToken = JsonConvert.SerializeObject(token);

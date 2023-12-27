@@ -520,3 +520,5 @@ D:\WebApi\AutoAiDoc-back-end\WebApi\obj\Debug\net7.0\WebApi.pdb
 D:\WebApi\AutoAiDoc-back-end\WebApi\obj\Debug\net7.0\WebApi.genruntimeconfig.cache
 D:\WebApi\AutoAiDoc-back-end\WebApi\obj\Debug\net7.0\ref\WebApi.dll
 D:\WebApi\AutoAiDoc-back-end\WebApi\bin\Debug\net7.0\Newtonsoft.Json.dll
+D:\WebApi\AutoAiDoc-back-end\WebApi\bin\Debug\net7.0\CloudinaryDotNet.dll
+D:\WebApi\AutoAiDoc-back-end\WebApi\obj\Debug\net7.0\WebApi.sourcelink.json

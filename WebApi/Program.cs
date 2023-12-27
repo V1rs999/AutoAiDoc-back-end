@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using WebApi.Data;
+using WebApi.Helpers;
 using WebApi.Interface;
 using WebApi.Middleware;
 using WebApi.Models;
@@ -22,6 +23,8 @@ builder.Services.AddScoped<IListOFErrorRepository, ListOFErrorRepository>();
 builder.Services.AddScoped<IFileReader, FileReader>();
 builder.Services.AddScoped<IToken, Token>();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddScoped<IPhotoService, PhotoService>();
+builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
 builder.Services.AddDbContext<AppDbContext>(e =>
     e.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
