@@ -46,7 +46,7 @@ namespace WebApi.Controllers
                 UserName = registerVM.UserName,
                 SecurityStamp = Guid.NewGuid().ToString(),
                 Email = registerVM.Email,
-                ImageUrl = "http://16.170.236.235:5000/img/user.webp",
+                ImageUrl = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
             };
 
             var newUserResponse = await _userManager.CreateAsync(newUser, registerVM.Password);

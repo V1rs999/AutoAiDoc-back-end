@@ -32,16 +32,20 @@ namespace WebApi.Controllers
         {
             var user = await _accountRepository.GetUserByIdAsync(userId);
 
+            var LoginProvider = await _accountRepository.isLoginProvider(userId);
+
+
             if (user == null) { return BadRequest("Користувача не існує"); }
             var model = new AccountDto
             {
                 Id = user.Id,
                 UserName = user.UserName,
                 Email = user.Email,
-                LastName = user.LastName,
-                FirstName = user.FirstName,
-                PhoneNumber = user.PhoneNumber,
+                LastName = user.LastName ?? string.Empty,
+                FirstName = user.FirstName ?? string.Empty,
+                PhoneNumber = user.PhoneNumber ?? string.Empty,
                 ImageUrl = user.ImageUrl,
+                auth_Google = LoginProvider,
             };
             string jsUser = JsonConvert.SerializeObject(model);
             return Ok(jsUser);
@@ -67,6 +71,8 @@ namespace WebApi.Controllers
             user.PhoneNumber = model.PhoneNumber ?? user.PhoneNumber;
             user.LastName = model.LastName ?? user.LastName;
             user.FirstName = model.FirstName ?? user.FirstName;
+
+
 
             if (model.Password != null)
             {
