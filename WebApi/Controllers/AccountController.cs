@@ -1,10 +1,7 @@
-﻿using CloudinaryDotNet.Actions;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
-using System.IdentityModel.Tokens.Jwt;
-using System.Net;
 using WebApi.Dto;
 using WebApi.Interface;
 using WebApi.Models;
@@ -34,7 +31,6 @@ namespace WebApi.Controllers
 
             var LoginProvider = await _accountRepository.isLoginProvider(userId);
 
-
             if (user == null) { return BadRequest("Користувача не існує"); }
             var model = new AccountDto
             {
@@ -56,28 +52,28 @@ namespace WebApi.Controllers
         {
             if(!ModelState.IsValid) { return BadRequest(ModelState); }
 
-            var user = await _accountRepository.GetUserByIdAsync(model.Id);
+            var user = await _accountRepository.GetUserByIdAsync(model.userId);
             if(user == null) { return BadRequest("Користувача не існує"); }
+            var LoginProvider = await _accountRepository.isLoginProvider(model.userId);
+            var validate = await _userManager.CheckPasswordAsync(user, model.passwordR ?? string.Empty);
 
-            var LoginProvider = await _accountRepository.isLoginProvider(model.Id);
-
-            if (LoginProvider && user.Email != model.Email)
+            if (LoginProvider && (model.emailR != user.Email || !validate))
             {
-                return BadRequest("Користувачам авторизованим через Google не можна міняти електрону пошту");
-            };
+                    return BadRequest("Користувачам авторизованим через Google не можна міняти електрону пошту та пароль");
+            }
 
-            user.Email = model.Email ?? user.Email;
-            user.UserName = model.UserName ?? user.UserName;
-            user.PhoneNumber = model.PhoneNumber ?? user.PhoneNumber;
-            user.LastName = model.LastName ?? user.LastName;
-            user.FirstName = model.FirstName ?? user.FirstName;
+            user.Email = model.emailR.IsNullOrEmpty() ? user.Email : model.emailR;
+            user.UserName = model.userName.IsNullOrEmpty() ? user.UserName : model.userName;
+            user.PhoneNumber = model.phone.IsNullOrEmpty() ? user.PhoneNumber : model.phone;
+            user.LastName = model.lastName.IsNullOrEmpty() ? user.LastName : model.lastName;
+            user.FirstName = model.firstName.IsNullOrEmpty() ? user.FirstName : model.firstName;
+            await _userManager.UpdateNormalizedUserNameAsync(user);
+            await _userManager.UpdateNormalizedEmailAsync(user);
 
-
-
-            if (model.Password != null)
+            if (!model.passwordR.IsNullOrEmpty())
             {
                 var code = await _userManager.GeneratePasswordResetTokenAsync(user);
-                var result = await _userManager.ResetPasswordAsync(user, code, model.Password);
+                var result = await _userManager.ResetPasswordAsync(user, code, model.passwordR);
                 if (!result.Succeeded) { return BadRequest(model); }
             }
 
@@ -104,9 +100,9 @@ namespace WebApi.Controllers
                 {
                     ModelState.AddModelError("", "Сервер не зміг оновти фото");
                 }
+
                 var photoResult = await _photoService.AddPhotoAsync(model.Image);
                 user.ImageUrl = photoResult.Url.ToString() ?? user.ImageUrl;
-
             }
 
             if (_accountRepository.Update(user)) { return Ok("Успіх"); }
