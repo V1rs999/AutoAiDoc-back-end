@@ -63,7 +63,7 @@ namespace WebApi.Controllers
         [AllowAnonymous]
         public IActionResult GoogleLogin()
         {
-            string returnUrl = "https://autoaidoc.netlify.app";
+            string returnUrl = "https://localhost:5173";
             string provider = "Google";
             var redirectUrl = Url.Action(nameof(Callback), "Authorization", new { returnUrl });
             var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
