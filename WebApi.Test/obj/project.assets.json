@@ -9158,40 +9158,32 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\marty\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+    "C:\\Users\\Roman\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\WebApi\\AutoAiDoc-back-end\\WebApi.Test\\WebApi.Test.csproj",
+      "projectUniqueName": "D:\\web\\AutoAiDoc\\server\\AutoAiDoc-back-end\\WebApi.Test\\WebApi.Test.csproj",
       "projectName": "WebApi.Test",
-      "projectPath": "D:\\WebApi\\AutoAiDoc-back-end\\WebApi.Test\\WebApi.Test.csproj",
-      "packagesPath": "C:\\Users\\marty\\.nuget\\packages\\",
-      "outputPath": "D:\\WebApi\\AutoAiDoc-back-end\\WebApi.Test\\obj\\",
+      "projectPath": "D:\\web\\AutoAiDoc\\server\\AutoAiDoc-back-end\\WebApi.Test\\WebApi.Test.csproj",
+      "packagesPath": "C:\\Users\\Roman\\.nuget\\packages\\",
+      "outputPath": "D:\\web\\AutoAiDoc\\server\\AutoAiDoc-back-end\\WebApi.Test\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-      ],
       "configFilePaths": [
-        "C:\\Users\\marty\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "C:\\Users\\Roman\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "D:\\WebApi\\AutoAiDoc-back-end\\WebApi\\WebApi.csproj": {
-              "projectPath": "D:\\WebApi\\AutoAiDoc-back-end\\WebApi\\WebApi.csproj"
+            "D:\\web\\AutoAiDoc\\server\\AutoAiDoc-back-end\\WebApi\\WebApi.csproj": {
+              "projectPath": "D:\\web\\AutoAiDoc\\server\\AutoAiDoc-back-end\\WebApi\\WebApi.csproj"
             }
           }
         }
